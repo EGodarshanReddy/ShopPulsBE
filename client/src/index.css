@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Modern vibrant color palette for Gen Z audience */
+  --background: 240 10% 98%; /* Very light gray with blue tint */
+  --foreground: 250 20% 15%; /* Deep blue-gray for text */
+  --muted: 240 6% 96%;
+  --muted-foreground: 240 5% 50%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 250 20% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 250 20% 15%;
+  --border: 240 6% 94%;
+  --input: 240 6% 94%;
+  
+  /* Vibrant primary - Electric purple */
+  --primary: 265 90% 60%; /* #8025F9 - Vibrant purple */
+  --primary-foreground: 0 0% 100%;
+  
+  /* Gradient-friendly secondary - Bright teal */
+  --secondary: 180 100% 45%; /* #00C6C6 - Bright teal */
+  --secondary-foreground: 0 0% 100%;
+  
+  /* Energetic accent - Hot pink */
+  --accent: 330 100% 60%; /* #FF1A8C - Hot pink */
+  --accent-foreground: 0 0% 100%;
+  
+  /* System colors */
+  --destructive: 0 100% 65%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 160 100% 45%; /* #00CC9A - Bright mint */
+  --success-foreground: 0 0% 100%;
+  --warning: 35 100% 60%; /* #FF9432 - Bright orange */
+  --warning-foreground: 0 0% 100%;
+  --error: 350 100% 60%; /* #FF3A5E - Hot red */
+  --error-foreground: 0 0% 100%;
+  --ring: 265 90% 60%;
+  --radius: 1rem; /* Slightly larger radius for modern look */
+
+  /* Chart colors */
+  --chart-1: 265 90% 60%;
+  --chart-2: 330 100% 60%;
+  --chart-3: 180 100% 45%;
+  --chart-4: 160 100% 45%;
+  --chart-5: 35 100% 60%;
+
+  /* Sidebar */
+  --sidebar-background: 265 90% 98%;
+  --sidebar-foreground: 250 20% 15%;
+  --sidebar-primary: 265 90% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 330 100% 60%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 240 6% 94%;
+  --sidebar-ring: 265 90% 60%;
+}
+
+.dark {
+  /* Dark mode theme with vibrant highlights for Gen Z audience */
+  --background: 250 20% 8%; /* Deep blue-black background */
+  --foreground: 240 10% 98%; /* Almost white text */
+  --muted: 240 10% 15%;
+  --muted-foreground: 240 10% 65%;
+  --popover: 250 20% 10%;
+  --popover-foreground: 240 10% 98%;
+  --card: 250 20% 12%;
+  --card-foreground: 240 10% 98%;
+  --border: 240 10% 18%;
+  --input: 240 10% 18%;
+  
+  /* Keep same vibrant colors from light mode, but slightly brighter for dark backgrounds */
+  --primary: 265 90% 65%; /* Brighter Electric purple */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 180 100% 50%; /* Brighter teal */
+  --secondary-foreground: 0 0% 100%;
+  
+  --accent: 330 100% 65%; /* Brighter hot pink */
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 100% 70%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 160 100% 50%;
+  --success-foreground: 0 0% 100%;
+  --warning: 35 100% 65%;
+  --warning-foreground: 0 0% 100%;
+  --error: 350 100% 65%;
+  --error-foreground: 0 0% 100%;
+  --ring: 265 90% 65%;
+
+  /* Chart colors - brighter for dark mode */
+  --chart-1: 265 90% 65%;
+  --chart-2: 330 100% 65%;
+  --chart-3: 180 100% 50%;
+  --chart-4: 160 100% 50%;
+  --chart-5: 35 100% 65%;
+
+  /* Sidebar - dark with vibrant highlights */
+  --sidebar-background: 250 20% 12%;
+  --sidebar-foreground: 240 10% 98%;
+  --sidebar-primary: 265 90% 65%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 330 100% 65%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 240 10% 18%;
+  --sidebar-ring: 265 90% 65%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    font-family: 'Outfit', 'Poppins', sans-serif;
+    @apply antialiased bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    letter-spacing: -0.01em;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Outfit', sans-serif;
+    @apply font-semibold tracking-tight;
+  }
+}
+
+.app-frame {
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: hsl(var(--background));
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.screen {
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+  padding-bottom: 70px;
+  background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background)));
+}
+
+/* Modern card styling */
+.card-hover {
+  transition: all 0.3s ease;
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(116, 44, 219, 0.1);
+}
+
+/* Glass morphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-card {
+  background: rgba(30, 30, 40, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient borders */
+.gradient-border {
+  position: relative;
+  border-radius: var(--radius);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: calc(var(--radius) + 1px);
+  padding: 1px;
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)));
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Updated progress bar */
+.rewards-progress {
+  height: 10px;
+  border-radius: 5px;
+  background-color: hsl(var(--muted));
+  overflow: hidden;
+}
+
+.rewards-progress-bar {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+  transition: width 0.5s ease;
+}
+
+/* Updated category pill */
+.category-pill {
+  transition: all 0.2s ease;
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.category-pill.active {
+  background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)));
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px rgba(116, 44, 219, 0.2);
+}
+
+/* Hide scrollbars but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animated gradient button */
+.gradient-btn {
+  background-size: 200% 200%;
+  background-image: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)), hsl(var(--primary)));
+  animation: gradient-shift 4s ease infinite;
+  color: white;
+  font-weight: 600;
+  border: none;
+  box-shadow: 0 4px 10px rgba(116, 44, 219, 0.2);
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
