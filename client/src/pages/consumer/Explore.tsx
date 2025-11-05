@@ -186,7 +186,9 @@ export default function ConsumerExplore() {
       return (
         <div className="space-y-4">
           {storesData.map((store) => (
-            <StoreCard
+                <StoreCard
+                  // ensure `categories` prop is provided (component expects string[])
+                  categories={[store.category]}
               key={store.id}
               {...store}
               onClick={() => navigate(`/consumer/store/${store.id}`)}

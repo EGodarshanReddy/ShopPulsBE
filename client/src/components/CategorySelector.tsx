@@ -15,7 +15,8 @@ export function CategorySelector({
   multiSelect = true,
   className
 }: CategorySelectorProps) {
-  const [categories, setCategories] = useState<string[]>(BUSINESS_CATEGORIES);
+  // BUSINESS_CATEGORIES is a readonly tuple; copy it into a mutable array for state
+  const [categories, setCategories] = useState<string[]>(() => Array.from(BUSINESS_CATEGORIES));
   
   const toggleCategory = (category: string) => {
     if (multiSelect) {

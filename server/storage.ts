@@ -14,6 +14,314 @@ import {
 } from "@shared/schema";
 
 import { nanoid } from "nanoid";
+import { supabase } from "./supabaseClient";
+
+export class SupabaseStorage implements IStorage {
+  async getUserById(id: number) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async getUserByPhone(phone: string) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('phone', phone)
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async createUser(user: InsertUser) {
+    const { data, error } = await supabase
+      .from('users')
+      .insert([user])
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async updateUser(id: number, user: Partial<User>) {
+    const { data, error } = await supabase
+      .from('users')
+      .update(user)
+      .eq('id', id)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Partner store methods
+  async getPartnerStoreById(id: number) {
+    const { data, error } = await supabase.from('partnerStores').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getPartnerStoreByUserId(userId: number) {
+    const { data, error } = await supabase.from('partnerStores').select('*').eq('userId', userId).single();
+    if (error) throw error;
+    return data;
+  }
+  async createPartnerStore(store: InsertPartnerStore, userId: number) {
+    const { data, error } = await supabase.from('partnerStores').insert([{ ...store, userId }]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async updatePartnerStore(id: number, store: Partial<PartnerStore>) {
+    const { data, error } = await supabase.from('partnerStores').update(store).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async getPartnerStoresByCategory(category: BusinessCategory) {
+    const { data, error } = await supabase.from('partnerStores').select('*').eq('category', category);
+    if (error) throw error;
+    return data;
+  }
+  async getNearbyPartnerStores(lat: number, lng: number, radius: number): Promise<PartnerStore[]> {
+    // Not implemented: return empty array for now
+    return [];
+  }
+  async searchPartnerStores(query: string) {
+    const { data, error } = await supabase.from('partnerStores').select('*').ilike('name', `%${query}%`);
+    if (error) throw error;
+    return data;
+  }
+
+  // Deal methods
+  async getDealById(id: number) {
+    const { data, error } = await supabase.from('deals').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getDealsByPartnerId(partnerId: number) {
+    const { data, error } = await supabase.from('deals').select('*').eq('partnerId', partnerId);
+    if (error) throw error;
+    return data;
+  }
+  async createDeal(deal: InsertDeal) {
+    const { data, error } = await supabase.from('deals').insert([deal]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async updateDeal(id: number, deal: Partial<Deal>) {
+    const { data, error } = await supabase.from('deals').update(deal).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async deactivateDeal(id: number) {
+    const { data, error } = await supabase.from('deals').update({ active: false }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async getActiveDeals() {
+    const { data, error } = await supabase.from('deals').select('*').eq('active', true);
+    if (error) throw error;
+    return data;
+  }
+  async getDealsByCategory(category: BusinessCategory) {
+    const { data, error } = await supabase.from('deals').select('*').eq('category', category);
+    if (error) throw error;
+    return data;
+  }
+  async searchDeals(query: string) {
+    const { data, error } = await supabase.from('deals').select('*').ilike('title', `%${query}%`);
+    if (error) throw error;
+    return data;
+  }
+
+  // Visit methods
+  async getVisitById(id: number) {
+    const { data, error } = await supabase.from('visits').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getVisitsByUserId(userId: number) {
+    const { data, error } = await supabase.from('visits').select('*').eq('userId', userId);
+    if (error) throw error;
+    return data;
+  }
+  async getScheduledVisitsByPartnerId(partnerId: number) {
+    const { data, error } = await supabase.from('visits').select('*').eq('partnerId', partnerId).eq('status', 'scheduled');
+    if (error) throw error;
+    return data;
+  }
+  async createVisit(visit: InsertVisit) {
+    const { data, error } = await supabase.from('visits').insert([visit]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async updateVisit(id: number, visit: Partial<Visit>) {
+    const { data, error } = await supabase.from('visits').update(visit).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async markVisitAsCompleted(id: number) {
+    const { data, error } = await supabase.from('visits').update({ status: 'completed' }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Review methods
+  async getReviewById(id: number) {
+    const { data, error } = await supabase.from('reviews').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getReviewsByPartnerId(partnerId: number) {
+    const { data, error } = await supabase.from('reviews').select('*').eq('partnerId', partnerId);
+    if (error) throw error;
+    return data;
+  }
+  async getReviewsByUserId(userId: number) {
+    const { data, error } = await supabase.from('reviews').select('*').eq('userId', userId);
+    if (error) throw error;
+    return data;
+  }
+  async createReview(review: InsertReview) {
+    const { data, error } = await supabase.from('reviews').insert([review]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async publishReview(id: number) {
+    const { data, error } = await supabase.from('reviews').update({ published: true }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Reward methods
+  async getRewardsByUserId(userId: number) {
+    const { data, error } = await supabase.from('rewards').select('*').eq('userId', userId);
+    if (error) throw error;
+    return data;
+  }
+  async getTotalRewardPointsByUserId(userId: number) {
+    const { data, error } = await supabase.from('rewards').select('points').eq('userId', userId);
+    if (error) throw error;
+    return data ? data.reduce((sum: number, r: any) => sum + (r.points || 0), 0) : 0;
+  }
+  async createReward(reward: InsertReward) {
+    const { data, error } = await supabase.from('rewards').insert([reward]).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Redemption methods
+  async getRedemptionById(id: number) {
+    const { data, error } = await supabase.from('redemptions').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getRedemptionsByUserId(userId: number) {
+    const { data, error } = await supabase.from('redemptions').select('*').eq('userId', userId);
+    if (error) throw error;
+    return data;
+  }
+  async getRedemptionsByPartnerId(partnerId: number) {
+    const { data, error } = await supabase.from('redemptions').select('*').eq('partnerId', partnerId);
+    if (error) throw error;
+    return data;
+  }
+  async createRedemption(redemption: InsertRedemption) {
+    const { data, error } = await supabase.from('redemptions').insert([redemption]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async updateRedemptionStatus(id: number, status: string) {
+    const { data, error } = await supabase.from('redemptions').update({ status }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Referral methods
+  async getReferralById(id: number) {
+    const { data, error } = await supabase.from('referrals').select('*').eq('id', id).single();
+    if (error) throw error;
+    return data;
+  }
+  async getReferralsByReferrerId(referrerId: number) {
+    const { data, error } = await supabase.from('referrals').select('*').eq('referrerId', referrerId);
+    if (error) throw error;
+    return data;
+  }
+  async createReferral(referral: InsertReferral) {
+    const { data, error } = await supabase.from('referrals').insert([referral]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async updateReferralStatus(id: number, status: string) {
+    const { data, error } = await supabase.from('referrals').update({ status }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // OTP methods
+  async createOtp(otp: InsertOtp) {
+    const { data, error } = await supabase.from('otps').insert([otp]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async getOtpByPhone(phone: string) {
+    const { data, error } = await supabase.from('otps').select('*').eq('phone', phone).single();
+    if (error) throw error;
+    return data;
+  }
+  async verifyOtp(phone: string, otp: string) {
+    const { data, error } = await supabase.from('otps').select('*').eq('phone', phone).eq('otp', otp).single();
+    if (error) throw error;
+    return !!data;
+  }
+
+  // Notification methods
+  async getNotificationsByUserId(userId: number) {
+    const { data, error } = await supabase.from('notifications').select('*').eq('userId', userId);
+    if (error) throw error;
+    return data;
+  }
+  async createNotification(notification: InsertNotification) {
+    const { data, error } = await supabase.from('notifications').insert([notification]).select().single();
+    if (error) throw error;
+    return data;
+  }
+  async markNotificationAsRead(id: number) {
+    const { data, error } = await supabase.from('notifications').update({ read: true }).eq('id', id).select().single();
+    if (error) throw error;
+    return data;
+  }
+
+  // Partner Statistics methods
+  async getPartnerStatsByDateRange(partnerId: number, startDate: Date, endDate: Date) {
+    const { data, error } = await supabase.from('partnerStats').select('*').eq('partnerId', partnerId).gte('date', startDate.toISOString()).lte('date', endDate.toISOString());
+    if (error) throw error;
+    return data;
+  }
+  async createOrUpdatePartnerStats(stats: InsertPartnerStat): Promise<PartnerStat> {
+    // Not implemented: return dummy object for now
+    return {
+      id: 0,
+      date: stats.date,
+      partnerId: stats.partnerId,
+      storeViews: stats.storeViews ?? 0,
+      dealViews: stats.dealViews ?? 0,
+      scheduledVisits: stats.scheduledVisits ?? 0,
+      actualVisits: stats.actualVisits ?? 0,
+    };
+  }
+  async incrementStoreViews(partnerId: number): Promise<void> {
+    // Not implemented: do nothing
+    return;
+  }
+  async incrementDealViews(partnerId: number): Promise<void> {
+    // Not implemented: do nothing
+    return;
+  }
+}
 
 export interface IStorage {
   // User methods
@@ -590,7 +898,11 @@ export class MemStorage implements IStorage {
   async getNotificationsByUserId(userId: number): Promise<Notification[]> {
     return Array.from(this.notifications.values())
       .filter(notification => notification.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .sort((a, b) => {
+        const tb = a?.createdAt ? new Date(b.createdAt as any).getTime() : 0;
+        const ta = a?.createdAt ? new Date(a.createdAt as any).getTime() : 0;
+        return tb - ta;
+      });
   }
   
   async createNotification(notification: InsertNotification): Promise<Notification> {
@@ -631,22 +943,25 @@ export class MemStorage implements IStorage {
   }
   
   async createOrUpdatePartnerStats(stats: InsertPartnerStat): Promise<PartnerStat> {
-    const key = `${stats.partnerId}_${stats.date.toISOString().split('T')[0]}`;
+  const rawDate: any = (stats as any).date;
+  const dateStr = rawDate instanceof Date ? rawDate.toISOString().split('T')[0] : String(rawDate);
+    const key = `${stats.partnerId}_${dateStr}`;
     const existingStat = this.partnerStats.get(key);
-    
+
     if (existingStat) {
-      const updatedStat = { ...existingStat, ...stats };
+      const updatedStat = { ...existingStat, ...stats, date: dateStr };
       this.partnerStats.set(key, updatedStat);
       return updatedStat;
     } else {
       const id = this.partnerStatIdCounter++;
-      const newStat: PartnerStat = { 
-        ...stats, 
+      const newStat: PartnerStat = {
         id,
-        storeViews: stats.storeViews || 0,
-        dealViews: stats.dealViews || 0,
-        scheduledVisits: stats.scheduledVisits || 0,
-        actualVisits: stats.actualVisits || 0
+        date: dateStr,
+        partnerId: stats.partnerId,
+        storeViews: stats.storeViews ?? 0,
+        dealViews: stats.dealViews ?? 0,
+        scheduledVisits: stats.scheduledVisits ?? 0,
+        actualVisits: stats.actualVisits ?? 0,
       };
       this.partnerStats.set(key, newStat);
       return newStat;
@@ -657,23 +972,24 @@ export class MemStorage implements IStorage {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const key = `${partnerId}_${today.toISOString().split('T')[0]}`;
+    const todayStr = today.toISOString().split('T')[0];
+    const key = `${partnerId}_${todayStr}`;
     const existingStat = this.partnerStats.get(key);
-    
+
     if (existingStat) {
-      const updatedStat = { 
-        ...existingStat, 
-        storeViews: existingStat.storeViews + 1 
+      const updatedStat = {
+        ...existingStat,
+        storeViews: (existingStat.storeViews ?? 0) + 1,
       };
       this.partnerStats.set(key, updatedStat);
     } else {
       await this.createOrUpdatePartnerStats({
         partnerId,
-        date: today,
+        date: todayStr,
         storeViews: 1,
         dealViews: 0,
         scheduledVisits: 0,
-        actualVisits: 0
+        actualVisits: 0,
       });
     }
   }
@@ -682,23 +998,24 @@ export class MemStorage implements IStorage {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const key = `${partnerId}_${today.toISOString().split('T')[0]}`;
+    const todayStr = today.toISOString().split('T')[0];
+    const key = `${partnerId}_${todayStr}`;
     const existingStat = this.partnerStats.get(key);
-    
+
     if (existingStat) {
-      const updatedStat = { 
-        ...existingStat, 
-        dealViews: existingStat.dealViews + 1 
+      const updatedStat = {
+        ...existingStat,
+        dealViews: (existingStat.dealViews ?? 0) + 1,
       };
       this.partnerStats.set(key, updatedStat);
     } else {
       await this.createOrUpdatePartnerStats({
         partnerId,
-        date: today,
+        date: todayStr,
         storeViews: 0,
         dealViews: 1,
         scheduledVisits: 0,
-        actualVisits: 0
+        actualVisits: 0,
       });
     }
   }
@@ -707,23 +1024,24 @@ export class MemStorage implements IStorage {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const key = `${partnerId}_${today.toISOString().split('T')[0]}`;
+    const todayStr = today.toISOString().split('T')[0];
+    const key = `${partnerId}_${todayStr}`;
     const existingStat = this.partnerStats.get(key);
-    
+
     if (existingStat) {
-      const updatedStat = { 
-        ...existingStat, 
-        scheduledVisits: existingStat.scheduledVisits + 1 
+      const updatedStat = {
+        ...existingStat,
+        scheduledVisits: (existingStat.scheduledVisits ?? 0) + 1,
       };
       this.partnerStats.set(key, updatedStat);
     } else {
       await this.createOrUpdatePartnerStats({
         partnerId,
-        date: today,
+        date: todayStr,
         storeViews: 0,
         dealViews: 0,
         scheduledVisits: 1,
-        actualVisits: 0
+        actualVisits: 0,
       });
     }
   }
@@ -732,23 +1050,24 @@ export class MemStorage implements IStorage {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    const key = `${partnerId}_${today.toISOString().split('T')[0]}`;
+    const todayStr = today.toISOString().split('T')[0];
+    const key = `${partnerId}_${todayStr}`;
     const existingStat = this.partnerStats.get(key);
-    
+
     if (existingStat) {
-      const updatedStat = { 
-        ...existingStat, 
-        actualVisits: existingStat.actualVisits + 1 
+      const updatedStat = {
+        ...existingStat,
+        actualVisits: (existingStat.actualVisits ?? 0) + 1,
       };
       this.partnerStats.set(key, updatedStat);
     } else {
       await this.createOrUpdatePartnerStats({
         partnerId,
-        date: today,
+        date: todayStr,
         storeViews: 0,
         dealViews: 0,
         scheduledVisits: 0,
-        actualVisits: 1
+        actualVisits: 1,
       });
     }
   }

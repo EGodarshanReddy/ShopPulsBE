@@ -132,9 +132,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Update user verification status if needed
       if (!user.isVerified) {
-        user = await storage.updateUser(user.id, { isVerified: true });
+        const updated = await storage.updateUser(user.id, { isVerified: true });
+        if (!updated) {
+          return res.status(500).json({ message: 'Failed to update user verification status' });
+        }
+        user = updated;
       }
-      
+
       // Set session
       req.session.userId = user.id;
       req.session.userType = user.userType;
@@ -1003,10 +1007,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const stats = await storage.getPartnerStatsByDateRange(store.id, startDate, endDate);
       
       // Calculate totals
-      const totalStoreViews = stats.reduce((total, stat) => total + stat.storeViews, 0);
-      const totalDealViews = stats.reduce((total, stat) => total + stat.dealViews, 0);
-      const totalScheduledVisits = stats.reduce((total, stat) => total + stat.scheduledVisits, 0);
-      const totalActualVisits = stats.reduce((total, stat) => total + stat.actualVisits, 0);
+  const totalStoreViews = stats.reduce((total, stat) => total + (stat.storeViews ?? 0), 0);
+  const totalDealViews = stats.reduce((total, stat) => total + (stat.dealViews ?? 0), 0);
+  const totalScheduledVisits = stats.reduce((total, stat) => total + (stat.scheduledVisits ?? 0), 0);
+  const totalActualVisits = stats.reduce((total, stat) => total + (stat.actualVisits ?? 0), 0);
       
       res.status(200).json({
         stats,

@@ -1,7 +1,14 @@
+import * as dotenv from 'dotenv-safe';
+
+// Load and validate environment variables
+dotenv.config({
+  example: '.env.example',
+  allowEmptyValues: false
+});
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import dotenv from "dotenv";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -41,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  const httpServer = await registerRoutes(app);
 
   app.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     // Log error details for debugging
@@ -79,39 +86,14 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  // if (app.get("env") === "development") {
-  //   await setupVite(app, server);
-  // } else {
-  //   serveStatic(app);
-  // }
-
-  // // ALWAYS serve the app on port 5000
-  // // this serves both the API and the client.
-  // // It is the only port that is not firewalled.
-  // const port = 5000;
-  // server.listen({
-  //   port,
-  //   host: "0.0.0.0",
-  //   reusePort: true,
-  // }, () => {
-  //   log(`serving on port ${port}`);
-  // });
-  // ALWAYS serve the app on port 5000
-// this serves both the API and the client.
-const port = process.env.PORT ? Number(process.env.PORT) : 5000;
-
-// ✅ Use 127.0.0.1 for Windows local dev (avoid ENOTSUP error)
-const host = process.env.NODE_ENV === "development" ? "127.0.0.1" : "0.0.0.0";
-
-server.listen(
-  {
-    port,
-    host,
-    reusePort: true,
-  },
-  () => {
-    log(`✅ Server running at http://${host}:${port}`);
+  if (app.get("env") === "development") {
+  await setupVite(app, httpServer);
+  } else {
+    serveStatic(app);
   }
-);
+  const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
+  httpServer.listen(port, "localhost", () => {
+    log(`serving on http://localhost:${port}`);
+  });
 
 })();

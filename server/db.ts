@@ -1,15 +1,9 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
-import * as schema from "@shared/schema";
+// DEPRECATED: Neon/Drizzle-based database initialization.
+// This project has been migrated to use Supabase for storage. The original
+// `server/db.ts` file has been kept as a placeholder to avoid accidental
+// deletes; do not use this file — import `storage` from `./storage` instead.
 
-neonConfig.webSocketConstructor = ws;
+// If you want to remove this file entirely, ensure no modules import it
+// and then delete it.
 
-// if (!process.env.DATABASE_URL) {
-//   throw new Error(
-//     "DATABASE_URL must be set. Did you forget to provision a database?",
-//   );
-// }
-
-export const pool = new Pool({ connectionString: "postgresql://neondb_owner:npg_gOrMI0jnF9iX@ep-shy-recipe-ae9onmz5-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require" });
-export const db = drizzle(pool, { schema });
+export {};

@@ -50,7 +50,8 @@ export function OTPInput({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       // Move to previous input on backspace if current input is empty
-      inputRefs.current[index - a1]?.focus();
+  // typo: 'a1' should be numeric 1
+  inputRefs.current[index - 1]?.focus();
     }
   };
   
