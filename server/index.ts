@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv-safe';
 
 // Load and validate environment variables
 dotenv.config({
-  example: '.env.example',
+  example: '.env',
   allowEmptyValues: false
 });
 
